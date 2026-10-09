@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14243B">
+<title>Study Rush — Ultimate Edition</title>
+<style>
+/* ============ TOKENS ============ */
+:root{--navy:#14243B;--navy2:#243B59;--warm:#F8F7F4;--white:#FFFFFF;--wine:#8C2430;--gray:#E8EBEF;--green:#278568;
+--ink:#14243B;--mute:#5d6b80;--r:20px;--sh:0 1px 2px rgba(20,36,59,.05),0 10px 30px -12px rgba(20,36,59,.18);
+--ease:cubic-bezier(.2,.8,.2,1);--font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Inter","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{font-family:var(--font);background:var(--warm);color:var(--ink);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .5s var(--ease)}
+body.dark{background:var(--navy)}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+button:focus-visible{outline:3px solid rgba(140,36,48,.45);outline-offset:3px}
+.screen{display:none;min-height:100dvh}
+.screen.on{display:flex;flex-direction:column;animation:scr .5s var(--ease) both}
+@keyframes scr{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+.wrap{width:100%;max-width:760px;margin:0 auto;padding:0 20px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+/* ============ BUTTONS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 28px;border-radius:16px;font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;transition:transform .18s var(--ease),box-shadow .25s var(--ease),background .25s,opacity .25s;user-select:none}
+.btn:active{transform:scale(.965)}
+.btn.pri{background:var(--wine);color:#fff;box-shadow:0 12px 28px -10px rgba(140,36,48,.7)}
+.btn.pri:hover{transform:translateY(-2px);box-shadow:0 18px 34px -12px rgba(140,36,48,.8)}
+.btn.pri:active{transform:scale(.965)}
+.btn.navy{background:var(--navy);color:#fff;box-shadow:0 12px 26px -12px rgba(20,36,59,.7)}
+.btn.navy:hover{transform:translateY(-2px)}
+.btn.ghost{border:1.5px solid rgba(255,255,255,.28);color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.08)}
+.btn.line{border:1.5px solid var(--gray);background:#fff;color:var(--navy)}
+.btn.line:hover{border-color:var(--navy2)}
+.btn[disabled]{opacity:.35;pointer-events:none;box-shadow:none}
+.btn.sm{min-height:44px;padding:0 16px;font-size:12.5px;border-radius:12px}
+/* ============ HOME ============ */
+#home{color:#fff;position:relative;overflow:hidden}
+#home .bg{position:absolute;inset:0;background:radial-gradient(60% 45% at 50% 22%,rgba(60,96,150,.55),transparent 70%),radial-gradient(40% 30% at 85% 95%,rgba(140,36,48,.35),transparent 70%);pointer-events:none}
+#home .wrap{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:max(28px,env(safe-area-inset-top));padding-bottom:36px}
+.orb{position:relative;width:230px;height:230px;margin:10px 0 6px;perspective:800px;animation:rise 1s var(--ease) both}
+.orb .core{position:absolute;inset:34%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#c9d6ea 35%,#5b7fb3 70%,#243B59);box-shadow:0 0 60px 10px rgba(120,160,220,.45);animation:pulse 4s ease-in-out infinite}
+.orb .ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);transform-style:preserve-3d}
+.orb .ring:after{content:"";position:absolute;top:-5px;left:50%;width:9px;height:9px;margin-left:-5px;border-radius:50%;background:#fff;box-shadow:0 0 14px #fff}
+.orb .r1{animation:spin1 9s linear infinite}
+.orb .r2{inset:10%;border-color:rgba(214,120,132,.6);animation:spin2 12s linear infinite}.orb .r2:after{background:#e58b96;box-shadow:0 0 14px #e58b96}
+.orb .r3{inset:-9%;border-style:dashed;border-color:rgba(255,255,255,.16);animation:spin3 26s linear infinite}.orb .r3:after{display:none}
+@keyframes spin1{from{transform:rotateX(68deg) rotateZ(0)}to{transform:rotateX(68deg) rotateZ(360deg)}}
+@keyframes spin2{from{transform:rotateY(64deg) rotateZ(360deg)}to{transform:rotateY(64deg) rotateZ(0)}}
+@keyframes spin3{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{transform:scale(1.07);box-shadow:0 0 80px 16px rgba(120,160,220,.55)}}
+.chipf{position:absolute;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);white-space:nowrap;animation:floaty 6s ease-in-out infinite}
+.chipf:nth-of-type(1){top:6%;left:-22%}.chipf:nth-of-type(2){top:22%;right:-26%;animation-delay:-2s}.chipf:nth-of-type(3){bottom:14%;left:-18%;animation-delay:-4s}.chipf:nth-of-type(4){bottom:2%;right:-14%;animation-delay:-1s}
+@keyframes floaty{50%{transform:translateY(-10px)}}
+@keyframes rise{from{opacity:0;transform:translateY(26px) scale(.9)}to{opacity:1;transform:none}}
+.logo{font-size:clamp(46px,11vw,84px);font-weight:800;letter-spacing:-.045em;line-height:.95;margin:14px 0 0;animation:rise .9s .12s var(--ease) both}
+.logo span{color:#e58b96}
+#home .eyebrow{color:rgba(255,255,255,.62);margin-top:14px;animation:rise .9s .22s var(--ease) both}
+.tag{font-size:clamp(18px,3.4vw,22px);color:rgba(255,255,255,.88);max-width:420px;margin:18px 0 26px;animation:rise .9s .3s var(--ease) both}
+.cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:rise .9s .38s var(--ease) both}
+.modes{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;justify-content:center;animation:rise .9s .46s var(--ease) both}
+.mode{padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);text-align:left;transition:.25s var(--ease);min-width:200px}
+.mode:hover{background:rgba(255,255,255,.12);transform:translateY(-2px)}
+.mode b{display:block;font-size:13px;letter-spacing:.12em}.mode small{font-size:13px;color:rgba(255,255,255,.65)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;margin-top:30px;animation:rise .9s .54s var(--ease) both}
+.stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px 8px}
+.stat b{display:block;font-size:28px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.reset{margin-top:20px;font-size:13px;color:rgba(255,255,255,.45);text-decoration:underline;text-underline-offset:3px;min-height:44px}
+/* ============ TOP BAR ============ */
+.top{position:sticky;top:0;z-index:5;background:rgba(248,247,244,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--gray);padding-top:env(safe-area-inset-top)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:62px}
+.mini{font-weight:800;letter-spacing:-.03em;font-size:17px;white-space:nowrap}.mini span{color:var(--wine)}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--gray);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--navy2),var(--wine));transition:width .7s var(--ease)}
+.pill{font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:99px;background:#fff;border:1px solid var(--gray);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill.g{color:var(--green)}
+.x{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:20px;color:var(--mute);transition:.2s}.x:hover{background:var(--gray);color:var(--navy)}
+/* ============ QUIZ ============ */
+#quiz main{flex:1;padding:26px 0 130px}
+.meta{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.pr{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;border-radius:8px}
+.pr.p1{background:var(--wine);color:#fff}.pr.p2{background:var(--navy2);color:#fff}.pr.p3{background:var(--gray);color:var(--navy)}
+.num{font-size:13px;color:var(--mute);font-weight:600}
+.ctx{background:#fff;border:1px solid var(--gray);border-left:4px solid var(--navy2);border-radius:14px;padding:14px 16px;font-size:16px;color:#33425a;margin-bottom:16px}
+.qt{font-size:clamp(23px,4.4vw,31px);font-weight:750;font-weight:700;letter-spacing:-.022em;line-height:1.2;margin:0 0 8px}
+.hint{font-size:14px;color:var(--mute);margin:0 0 18px}
+.qin{animation:qin .42s var(--ease) both}
+@keyframes qin{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+.opts{display:grid;gap:12px}.opts.tf{grid-template-columns:1fr 1fr}
+.opt{position:relative;display:flex;align-items:center;gap:14px;width:100%;text-align:left;min-height:64px;padding:14px 16px;background:#fff;border:1.5px solid var(--gray);border-radius:16px;box-shadow:0 1px 2px rgba(20,36,59,.04);transition:transform .2s var(--ease),border-color .2s,box-shadow .25s,background .25s,opacity .3s;animation:optin .45s var(--ease) both}
+.opt:nth-child(2){animation-delay:.04s}.opt:nth-child(3){animation-delay:.08s}.opt:nth-child(4){animation-delay:.12s}
+@keyframes optin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.opt:hover:not(:disabled){border-color:var(--navy2);transform:translateY(-2px);box-shadow:var(--sh)}
+.opt:active:not(:disabled){transform:scale(.98)}
+.opt .k{flex:0 0 32px;height:32px;border-radius:10px;background:var(--gray);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--navy2);transition:.2s}
+.opt .tx{flex:1;font-size:16.5px;line-height:1.35}
+.opt .mk{flex:0 0 22px;font-weight:800;font-size:18px;text-align:center}
+.opt.sel,.opt.act{border-color:var(--navy);background:#f1f4f9}.opt.sel .k{background:var(--navy);color:#fff}
+.opt.act{box-shadow:0 0 0 4px rgba(36,59,89,.14)}
+.opt:disabled{cursor:default;opacity:.55}
+.opt.good{opacity:1;border-color:var(--green);background:#eef7f3}.opt.good .k{background:var(--green);color:#fff}.opt.good .mk:after{content:"✓";color:var(--green)}
+.opt.bad{opacity:1;border-color:var(--wine);background:#faf0f1;animation:nudge .35s var(--ease)}.opt.bad .k{background:var(--wine);color:#fff}.opt.bad .mk:after{content:"✕";color:var(--wine)}
+@keyframes nudge{30%{transform:translateX(-5px)}60%{transform:translateX(4px)}}
+.opts.tf .opt{justify-content:center;min-height:92px}.opts.tf .opt .k,.opts.tf .opt .mk{display:none}.opts.tf .opt .tx{flex:none;font-weight:700;font-size:19px}
+.picks{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.picks .opt{flex-direction:column;justify-content:center;text-align:center;min-height:150px;padding:20px 12px}
+.picks .opt .k{display:none}.picks .opt .tx{flex:none;font-size:clamp(18px,3.6vw,24px);font-weight:750;font-weight:700;letter-spacing:-.02em}
+.picks .opt .mk{position:absolute;top:12px;right:14px}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mcol{display:grid;gap:10px;align-content:start}
+.match .opt{min-height:72px;padding:12px;gap:10px}.match .opt .tx{font-size:15px}.match .opt .k{flex-basis:28px;height:28px}
+.fb{margin-top:18px;background:#fff;border-radius:18px;border:1px solid var(--gray);padding:18px;box-shadow:var(--sh);animation:fbin .4s var(--ease) both}
+@keyframes fbin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.fb h4{margin:0 0 6px;font-size:18px;display:flex;align-items:center;gap:10px;letter-spacing:-.01em}
+.fb.ok h4{color:var(--green)}.fb.no h4{color:var(--wine)}
+.fb p{margin:0;font-size:16.5px;color:#2b3950}.fb .cn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.chk{width:26px;height:26px;flex:none}.chk circle{fill:var(--green)}.chk path{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:22;stroke-dashoffset:22;animation:draw .4s .1s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:6;background:rgba(248,247,244,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--gray);padding:12px 0 calc(12px + env(safe-area-inset-bottom))}
+.dock .wrap{display:flex;align-items:center;gap:10px}.dock .sp{flex:1}
+.dot{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:20}
+.toast{position:fixed;top:calc(74px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-30px);opacity:0;z-index:30;background:var(--navy);color:#fff;padding:12px 18px;border-radius:14px;font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 16px 40px -12px rgba(20,36,59,.6);transition:.45s var(--ease);pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translate(-50%,0)}.toast i{color:#7fd6b8;font-style:normal;margin-right:8px}
+/* ============ MODAL ============ */
+.modal{position:fixed;inset:0;z-index:40;background:rgba(20,36,59,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;place-items:center;padding:20px}
+.modal.on{display:grid;animation:fade .25s both}@keyframes fade{from{opacity:0}}
+.sheet{background:#fff;border-radius:24px;padding:28px;max-width:520px;width:100%;box-shadow:0 30px 80px -20px rgba(0,0,0,.5);animation:fbin .35s var(--ease) both}
+.sheet h3{margin:8px 0 10px;font-size:26px;letter-spacing:-.02em}.sheet p{margin:0 0 22px;font-size:17px;color:#2b3950}
+/* ============ PAGES (explore, cards, compare, report) ============ */
+.page main{flex:1;padding:28px 0 60px}
+.h1{font-size:clamp(30px,6vw,44px);font-weight:800;letter-spacing:-.035em;line-height:1.05;margin:6px 0 8px}
+.sub{color:var(--mute);margin:0 0 24px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:30px}
+.tile{background:#fff;border:1px solid var(--gray);border-radius:var(--r);padding:22px;text-align:left;box-shadow:var(--sh);transition:.3s var(--ease);min-height:150px;display:flex;flex-direction:column;justify-content:flex-end}
+.tile:hover{transform:translateY(-4px)}.tile.d{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tile b{font-size:21px;letter-spacing:-.02em}.tile small{font-size:14.5px;opacity:.7}
+.tile em{font-style:normal;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--wine);margin-bottom:auto}.tile.d em{color:#e58b96}
+.grp{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin:22px 0 10px}
+.cl{display:grid;gap:8px}
+.ci{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--gray);border-radius:14px;padding:12px 14px;width:100%;text-align:left;min-height:52px;transition:.2s}
+.ci:hover{border-color:var(--navy2)}.ci span{flex:1;font-size:16px;font-weight:600}.ci small{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.st{width:10px;height:10px;border-radius:50%;background:var(--gray);flex:none}.st.s{background:var(--navy2)}.st.m{background:var(--green)}
+/* flashcards */
+.deckc{font-size:13px;font-weight:700;color:var(--mute);text-align:center;margin-bottom:14px;letter-spacing:.06em}
+.scene{perspective:1400px;max-width:520px;margin:0 auto}
+.card3{position:relative;width:100%;height:min(56dvh,400px);transform-style:preserve-3d;transition:transform .7s var(--ease);cursor:pointer}
+.card3.flip{transform:rotateY(180deg)}
+.card3.out{animation:cout .32s var(--ease) forwards}.card3.inn{animation:cin .4s var(--ease) both}
+@keyframes cout{to{opacity:0;transform:translateX(-60px) rotate(-5deg)}}@keyframes cin{from{opacity:0;transform:translateX(60px) rotate(4deg)}}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:28px;padding:30px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 2px 4px rgba(20,36,59,.06),0 30px 60px -24px rgba(20,36,59,.45)}
+.face.f{background:linear-gradient(150deg,#1b3050,var(--navy));color:#fff;align-items:center;text-align:center}
+.face.f h3{font-size:clamp(28px,6.5vw,40px);letter-spacing:-.03em;line-height:1.08;margin:10px 0}.face.f small{color:rgba(255,255,255,.55);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.face.b{background:#fff;border:1px solid var(--gray);transform:rotateY(180deg);overflow:auto}
+.face.b h5{margin:0 0 10px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--wine)}.face.b p{margin:0;font-size:clamp(17px,3.6vw,20px);line-height:1.45}
+.fcb{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+/* compare */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:10px 14px;border-radius:99px;border:1.5px solid var(--gray);background:#fff;font-size:14px;font-weight:700;min-height:44px;transition:.2s}
+.tab.on{background:var(--navy);color:#fff;border-color:var(--navy)}.tab.done:after{content:" ✓";color:var(--green)}.tab.on.done:after{color:#7fd6b8}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative;margin-top:28px}
+.vs:after{content:"VS";position:absolute;left:50%;top:0;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:var(--wine);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800;letter-spacing:.06em;box-shadow:0 0 0 5px var(--warm);z-index:2}
+.cc{background:#fff;border:2px solid var(--gray);border-radius:22px;padding:20px 16px;text-align:left;box-shadow:var(--sh);transition:transform .35s var(--ease),border-color .25s,box-shadow .3s,opacity .3s;display:block;width:100%;animation:optin .5s var(--ease) both}
+.cc:nth-child(2){animation-delay:.08s}
+.cc:hover:not(:disabled){transform:translateY(-4px);border-color:var(--navy2)}
+.cc h3{margin:0;font-size:clamp(20px,4.6vw,26px);letter-spacing:-.025em}.cc .ty{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--wine)}
+.cc ul{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}.cc li{font-size:14.5px;line-height:1.35;color:#33425a;padding-left:14px;position:relative}.cc li:before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--navy2)}
+.cc:disabled{cursor:default}.cc.dim{opacity:.5}.cc.good{border-color:var(--green);transform:scale(1.02);box-shadow:0 20px 44px -18px rgba(39,133,104,.6)}.cc.bad{border-color:var(--wine)}
+.cq{margin-top:20px;background:var(--navy);color:#fff;border-radius:20px;padding:20px}
+.cq small{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#e58b96}.cq h4{margin:6px 0 0;font-size:clamp(19px,4vw,23px);letter-spacing:-.015em;line-height:1.25}
+.cq p{margin:12px 0 0;color:rgba(255,255,255,.85);font-size:16px}.cq .btn{margin-top:16px}
+/* report */
+.ringw{display:grid;place-items:center;margin:8px 0 22px;position:relative}
+.ring2{width:190px;height:190px;transform:rotate(-90deg)}.ring2 circle{fill:none;stroke-width:14}.ring2 .t{stroke:var(--gray)}.ring2 .v{stroke:var(--green);stroke-linecap:round;transition:stroke-dashoffset 1.2s var(--ease)}
+.ringw div{position:absolute;text-align:center}.ringw b{display:block;font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1}.ringw span{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.rs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.rsi{background:#fff;border:1px solid var(--gray);border-radius:16px;padding:14px 8px;text-align:center}.rsi b{display:block;font-size:24px;font-weight:800;letter-spacing:-.03em}.rsi span{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.prl{display:grid;gap:8px;margin:14px 0 6px}.prr{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600}.prr .bar{height:6px}.prr em{font-style:normal;font-variant-numeric:tabular-nums;color:var(--mute);min-width:44px;text-align:right}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.lst{background:#fff;border:1px solid var(--gray);border-radius:18px;padding:18px}.lst h4{margin:0 0 10px;font-size:12px;letter-spacing:.14em;text-transform:uppercase}.lst.g h4{color:var(--green)}.lst.w h4{color:var(--wine)}
+.lst ul{margin:0;padding:0;list-style:none;display:grid;gap:7px}.lst li{font-size:15px;display:flex;gap:8px;align-items:baseline}.lst li small{color:var(--mute);font-size:12px}
+.lst p{margin:0;color:var(--mute);font-size:15px}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.acts .btn{flex:1 1 200px}
+.note{font-size:14px;color:var(--mute);margin-top:18px}
+/* ============ RESPONSIVE ============ */
+@media(max-width:600px){body{font-size:16px}.stats,.rs{grid-template-columns:1fr 1fr}.tiles,.two{grid-template-columns:1fr}.orb{width:180px;height:180px}.chipf{font-size:11px;padding:5px 9px}
+.chipf:nth-of-type(1){left:-30%}.chipf:nth-of-type(2){right:-34%}.chipf:nth-of-type(3){left:-28%}.chipf:nth-of-type(4){right:-24%}
+.cta{width:100%}.cta .btn{flex:1 1 100%}.modes{width:100%}.mode{flex:1 1 100%}.top .wrap{gap:9px}.mini{font-size:15px}.pill.hidem{display:none}
+.match .opt .tx{font-size:14px}.match{gap:8px}.cc{padding:16px 12px}.cc li{font-size:13.5px}.dock .btn.sm span{display:none}.face{padding:24px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body class="dark">
+
+<!-- ================= HOME ================= -->
+<section class="screen on" id="home">
+  <div class="bg"></div>
+  <div class="wrap">
+    <div class="orb" aria-hidden="true">
+      <div class="ring r3"></div><div class="ring r1"></div><div class="ring r2"></div><div class="core"></div>
+      <span class="chipf">Natalidad</span><span class="chipf">2,1 hijos</span><span class="chipf">hab/km²</span><span class="chipf">Envejecimiento</span>
+    </div>
+    <h1 class="logo">STUDY <span>RUSH</span></h1>
+    <div class="eyebrow">Master what matters.</div>
+    <p class="tag">Todo lo que necesitás saber. Nada que no importe.</p>
+    <div class="cta">
+      <button class="btn pri" id="bStart">Comenzar repaso</button>
+      <button class="btn ghost" id="bExplore">Explorar contenido</button>
+    </div>
+    <div class="modes">
+      <button class="mode" id="bRush"><b>ESSENTIAL RUSH</b><small>Solo lo esencial, una pasada</small></button>
+      <button class="mode" id="bFull"><b>FULL MASTERY</b><small>Todo el temario hasta dominarlo</small></button>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="sEss">0</b><span>Esenciales</span></div>
+      <div class="stat"><b id="sCov">0%</b><span>Cobertura</span></div>
+      <div class="stat"><b id="sDom">0</b><span>Dominados</span></div>
+      <div class="stat"><b id="sPen">0</b><span>Sin ver</span></div>
+    </div>
+    <button class="reset" id="bReset">Reiniciar progreso</button>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section class="screen" id="quiz">
+  <header class="top"><div class="wrap">
+    <div class="mini">S<span>R</span></div>
+    <div class="bar" aria-label="Progreso"><i id="qBar"></i></div>
+    <div class="pill hidem" id="qNum">1</div>
+    <div class="pill g" id="qDom" title="Conceptos dominados">★ 0</div>
+    <button class="x" id="qExit" aria-label="Salir y ver reporte">✕</button>
+  </div></header>
+  <main><div class="wrap" id="qBody"></div></main>
+  <div class="dock"><div class="wrap">
+    <button class="btn line sm" id="qCard" disabled>▤ <span>Concepto</span></button>
+    <span class="pr p1" id="qPr">Esencial</span>
+    <div class="sp"></div>
+    <button class="btn navy" id="qMain" disabled>Elegí</button>
+  </div></div>
+</section>
+
+<!-- ================= EXPLORE ================= -->
+<section class="screen page" id="explore">
+  <header class="top"><div class="wrap"><div class="mini">STUDY <span>RUSH</span></div><div style="flex:1"></div><button class="x" data-go="home" aria-label="Volver">✕</button></div></header>
+  <main><div class="wrap">
+    <div class="eyebrow" style="color:var(--wine)">Explorar</div>
+    <h2 class="h1">Todo el contenido, a un toque.</h2>
+    <p class="sub">Tarjetas para entender, comparaciones para contrastar y el mapa completo de lo que entra.</p>
+    <div class="tiles">
+      <button class="tile d" id="tCards"><em>Flashcards 3D</em><b>Conceptos esenciales</b><small id="tCardsN"></small></button>
+      <button class="tile" id="tCmp"><em>Comparaciones</em><b>Países cara a cara</b><small id="tCmpN"></small></button>
+    </div>
+    <div id="map"></div>
+  </div></main>
+</section>
+
+<!-- ================= FLASHCARDS ================= -->
+<section class="screen page" id="cards">
+  <header class="top"><div class="wrap"><div class="mini">S<span>R</span></div><div class="bar"><i id="fBar"></i></div><button class="x" data-go="explore" aria-label="Volver">✕</button></div></header>
+  <main><div class="wrap" id="fBody"></div></main>
+</section>
+
+<!-- ================= COMPARE ================= -->
+<section class="screen page" id="compare">
+  <header class="top"><div class="wrap"><div class="mini">S<span>R</span></div><div style="flex:1;font-weight:700;font-size:14px;color:var(--mute);text-align:center">Comparaciones</div><button class="x" data-go="explore" aria-label="Volver">✕</button></div></header>
+  <main><div class="wrap"><div class="tabs" id="cTabs"></div><div id="cBody"></div></div></main>
+</section>
+
+<!-- ================= REPORT ================= -->
+<section class="screen page" id="report">
+  <header class="top"><div class="wrap"><div class="mini">STUDY <span>RUSH</span></div><div style="flex:1"></div><button class="x" data-go="home" aria-label="Inicio">✕</button></div></header>
+  <main><div class="wrap" id="rBody"></div></main>
+</section>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="sheet"><span class="pr p1" id="mPr"></span><h3 id="mT"></h3><p id="mP"></p><button class="btn navy" id="mX">Cerrar</button></div></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   1. CONTENIDO — conceptos (orden = relevancia), preguntas, comparaciones
+   Fuente: Santillana Est. Sociales 10, págs. 172–199 + prácticas de clase
+   ===================================================================== */
+// p: 1 esencial · 2 muy importante · 3 complementario.  fc: texto de la tarjeta.
+const CONCEPTS=[
+{id:'nat',p:1,n:'Natalidad',fc:'Nacimientos vivos por cada 1000 habitantes en un año. Viene bajando en todo el mundo por el costo de criar hijos, los nuevos estilos de vida y el uso de anticonceptivos.'},
+{id:'fec',p:1,n:'Fecundidad',fc:'Número de hijos que tiene una mujer durante su vida fértil. La natalidad se mide «por cada 1000 habitantes»; la fecundidad, «por mujer». Los países desarrollados tienen la más baja.'},
+{id:'mor',p:1,n:'Mortalidad',fc:'Muertes por cada 1000 habitantes en un año. Hambre, epidemias y guerras fueron las grandes causas; bajó al asegurar alimentos, controlar enfermedades y reducir conflictos.'},
+{id:'esp',p:1,n:'Esperanza de vida',fc:'Promedio de años que se espera que viva una persona al nacer. Sube gracias a avances médicos, mejor nutrición, saneamiento y acceso a la salud.'},
+{id:'rem',p:1,n:'Tasa de reemplazo',fc:'Promedio de hijos por mujer necesario para que una generación sea reemplazada por otra igual: 2,1. Por debajo de ese nivel la población termina declinando y envejeciendo.'},
+{id:'env',p:1,n:'Envejecimiento poblacional',fc:'Menos nacimientos + vida más larga = menos jóvenes y más adultos mayores. Consecuencia: menos trabajadores y más carga sobre pensiones y seguridad social.'},
+{id:'den',p:1,n:'Densidad de población',fc:'Relaciona habitantes con territorio: habitantes ÷ km². No es lo mismo que población total: un país enorme con mucha gente puede tener densidad baja.'},
+{id:'dis',p:1,n:'Distribución mundial',fc:'Es desigual: más del 90 % vive en el hemisferio norte, entre 20° y 60° de latitud, en climas templados y costas. Zonas polares y desiertos son vacíos poblacionales.'},
+{id:'crd',p:1,n:'Distribución en Costa Rica',fc:'No es homogénea. La explican factores geográficos (suelo, agua, clima, relieve), históricos (fundaciones coloniales) y socioeconómicos (servicios, empleo, vías). La GAM concentra cerca del 65 % en 3,8 % del territorio.'},
+{id:'pol',p:1,n:'Políticas de gestión poblacional',fc:'China impuso el hijo único (obligatorio) y luego lo relajó. India promovió planificación voluntaria con campañas. Japón, Corea del Sur y Europa incentivan nacimientos. Cada política responde a una realidad distinta.'},
+{id:'pro',p:1,n:'Crecimiento y proyecciones al 2050',fc:'El mundo sigue creciendo, pero cada vez más lento. África es el continente que más crecerá; Europa es el único que perderá población.'},
+{id:'crp',p:1,n:'Proyecciones de Costa Rica',fc:'Sube la esperanza de vida, bajan natalidad y fecundidad (1,24, muy bajo el reemplazo). La población crecerá más lento, llegará a un pico y luego disminuirá. Resultado: envejecimiento.'},
+{id:'c3',p:1,n:'Japón y Bolivia',fc:'Japón (desarrollado): decrece cada año, cierra escuelas, menos fuerza de trabajo, más carga de pensiones. Bolivia (en desarrollo): crecimiento discreto; su fecundidad bajó hasta el nivel de reemplazo.'},
+{id:'crn',p:1,n:'Densidad en Costa Rica',fc:'San José es la provincia más densa y Tibás el cantón más denso. Guanacaste y Puntarenas, las menos densas. Alajuela es 2.ª en habitantes, pero Heredia es 2.ª en densidad porque es más pequeña.'},
+{id:'des',p:1,n:'Desarrollados vs. menos desarrollados',fc:'Desarrollados: natalidad y fecundidad muy bajas, vida más larga. Menos desarrollados: natalidad alta por patrones patriarcales y poco acceso a salud reproductiva.'},
+{id:'c2',p:1,n:'España y Ruanda',fc:'España: fecundidad muy baja, envejecimiento y pensiones costosas. Ruanda: guerra civil con unas 800 000 muertes; al volver el orden su mortalidad se redujo a más de la mitad.'},
+{id:'crc',p:1,n:'Crecimiento por provincias y cantones',fc:'Todas las provincias crecieron, a ritmos distintos. Más: Guanacaste y Puntarenas (turismo, migración interna). Menos: Cartago y Heredia. 21 cantones del centro perdieron población por el costo de vida.'},
+{id:'c1',p:1,n:'Finlandia y Nicaragua',fc:'Finlandia: parámetros estables desde hace décadas y crecimiento reducido. Nicaragua: crecimiento moderado; su mortalidad y fecundidad bajaron y tiende a estabilizarse.'},
+{id:'cri',p:1,n:'Implicaciones para Costa Rica',fc:'Salud: más profesionales y atención al adulto mayor. Empleo y finanzas: crear empleo y reestructurar pensiones. Educación: seguir invirtiendo. Ambiente: uso racional y planeamiento urbano.'},
+{id:'c4',p:1,n:'Francia y Pakistán',fc:'Ambos entre los más poblados de su continente. Pakistán creció mucho más rápido porque mantiene una fecundidad alta; la de Francia es baja y estable.'},
+{id:'dyn',p:1,n:'Estado y dinámica poblacional',fc:'La geografía humana estudia la dinámica y distribución de la población apoyada en la demografía. Una población crece si nacen más de los que mueren, si cada mujer tiene al menos dos hijos o si llegan personas de otros lugares.'},
+{id:'mig',p:2,n:'Migración y disparidad demográfica',fc:'Los países pobres tienen muchos jóvenes sin oportunidades; los ricos necesitan mano de obra joven. Esa disparidad impulsa la migración, que puede alterar la reducción poblacional de Europa.'},
+{id:'crg',p:2,n:'Crecimiento de Costa Rica e INEC',fc:'La población se multiplicó más de 6 veces desde 1950. El INEC se basa en los censos (fuente primaria) y hace estimaciones para planificar salud, educación y vivienda.'},
+{id:'pf',p:2,n:'Planificación familiar',fc:'Decisión voluntaria de cuándo tener hijos, cuántos y con qué intervalo, incluido el método anticonceptivo. La ONU la considera un derecho humano. Sin ella se multiplican los embarazos no deseados.'},
+{id:'ea',p:2,n:'Embarazo adolescente',fc:'Embarazo en mujeres de 15 a 19 años. Interesa por sus consecuencias en la salud de madres e hijos. Es alto donde hay educación sexual inconsistente, desigualdad y matrimonio temprano.'},
+{id:'pir',p:2,n:'Pirámides de población',fc:'Gráficos de barras que muestran la composición por sexo y grupos de edad. La de Costa Rica tiene una base cada vez más angosta: menos niños, más adultos.'},
+{id:'mf',p:3,n:'Matrimonio forzado',fc:'Unión en la que una persona, o las dos, se casa contra su voluntad. Afecta sobre todo a mujeres menores de 18. Causa riesgos de salud, daño psicológico e interrupción de estudios.'},
+{id:'tr',p:3,n:'Trata de personas',fc:'Captación, transporte, traslado, acogida o recepción de personas usando amenaza o fuerza para explotarlas. Formas: trabajos forzados, explotación sexual y otras.'},
+{id:'sit',p:3,n:'Problemáticas en Costa Rica',fc:'El Estado promueve la planificación familiar, redujo el embarazo adolescente con programas educativos, aprobó la Ley de Relaciones Impropias y combate la trata (es país de origen, tránsito y destino).'},
+{id:'foc',p:3,n:'Focos de población por región',fc:'Asia: costa de China e India. Europa: Atlántico norte y Mediterráneo. África: golfo de Guinea y norte. Oceanía: costa este de Australia. Los extremos norte, casi vacíos.'}
+];
+const ITEMS=[];
+// q(concepto, nivel 1 básico/2 aplicación, tipo, pregunta, opciones, explicación, contexto)
+// mc y pick: la PRIMERA opción es la correcta (se barajan al mostrar). multi: correctas con «*». order: orden correcto. match: pares. tf: true/false.
+function q(c,l,t,text,o,exp,ctx){ITEMS.push({id:c+'-'+ITEMS.filter(i=>i.c===c).length,c,l,t,q:text,o,exp,ctx})}
+
+q('nat',1,'mc','¿Qué mide la tasa de natalidad?',['Los nacimientos vivos por cada 1000 habitantes en un año','Los hijos que tiene una mujer durante su vida fértil','Las muertes por cada 1000 habitantes en un año','Los años que se espera que viva una persona'],'La natalidad cuenta nacimientos respecto a toda la población: por cada 1000 habitantes en un año.');
+q('nat',2,'multi','¿Cuáles factores explican el descenso mundial de la natalidad?',['*El alto costo de criar y educar a los hijos','*El uso de técnicas anticonceptivas','*Los cambios en estilos de vida y expectativas personales','El aumento de epidemias y guerras'],'El libro señala tres razones: estilos de vida y realización personal, costo de la crianza y anticonceptivos. Las epidemias y guerras afectan la mortalidad, no explican este descenso.');
+q('nat',1,'tf','A escala mundial, la natalidad ha aumentado en las últimas décadas.',false,'Es al revés: la natalidad mundial se ha reducido y las proyecciones indican que seguirá bajando.');
+
+q('fec',1,'mc','La tasa de fecundidad indica…',['El número de hijos que tiene una mujer durante su vida fértil','Los nacimientos por cada 1000 habitantes en un año','La cantidad de mujeres en edad reproductiva de un país','El promedio de años que vive la población'],'Fecundidad = hijos por mujer. Es la que se compara con la tasa de reemplazo.');
+q('fec',1,'pick','¿Cuál indicador se expresa «por mujer» y no «por cada 1000 habitantes»?',['Fecundidad','Natalidad'],'La natalidad se calcula sobre toda la población; la fecundidad, sobre cada mujer en su vida fértil.');
+q('fec',2,'mc','¿Qué muestra este contraste?',['Los países desarrollados tienen el menor número de hijos por mujer','Los países desarrollados tienen la mortalidad más baja','La fecundidad depende de la extensión del territorio','Todos los países tienden a la misma fecundidad'],'Los países desarrollados tienen la fecundidad más baja; en los menos desarrollados la cifra casi duplica el promedio mundial.','Alemania registra 1,3 hijos por mujer y Níger 6,3.');
+
+q('mor',1,'mc','Históricamente, ¿cuáles han sido las mayores causas de muerte temprana?',['El hambre, las epidemias y las guerras','El envejecimiento y la baja natalidad','La migración y la urbanización','El clima templado y la alta densidad'],'Por eso las medidas clave para reducir la mortalidad fueron asegurar alimentos, controlar enfermedades y disminuir conflictos.');
+q('mor',2,'multi','¿Qué medidas permitieron reducir la mortalidad mundial?',['*Asegurar la provisión de alimentos','*Controlar las enfermedades','*Disminuir los conflictos','Limitar por ley el número de hijos'],'Atacan directamente las tres causas históricas de muerte: hambre, epidemias y guerras. Limitar hijos es una política de natalidad.');
+q('mor',2,'mc','¿Cuál explicación es la más razonable?',['Su población está más envejecida, y donde hay más adultos mayores hay más defunciones','Sus sistemas de salud son peores que los de los países pobres','Tienen más epidemias y hambrunas','Su natalidad es mucho más alta'],'No es peor salud (viven más años). Al tener muchos adultos mayores, la cantidad de defunciones por cada 1000 habitantes sube.','En los países desarrollados la tasa de mortalidad (11 por mil) es mayor que en los países en desarrollo (7 por mil), aunque su esperanza de vida es más alta.');
+
+q('esp',1,'mc','La esperanza de vida es…',['El promedio de años que se espera que viva una persona al nacer','La edad máxima que alcanza la población de un país','El número de adultos mayores por cada 1000 habitantes','Los años que una mujer permanece en edad fértil'],'Es un promedio que depende de las condiciones de mortalidad del momento en que se nace.');
+q('esp',2,'multi','¿Qué factores hicieron subir la esperanza de vida mundial?',['*Los avances médicos','*La mejora de la nutrición','*El saneamiento y el acceso a la atención sanitaria','El aumento de la natalidad'],'Es uno de los mayores logros en salud pública, aunque persisten disparidades entre países desarrollados y en desarrollo.');
+q('esp',2,'mc','¿Cuál indicador resulta más pertinente?',['Esperanza de vida','Tasa de natalidad','Densidad poblacional','Tasa de fecundidad'],'La esperanza de vida compara cuántos años vive en promedio la población de cada país.','Un estudio compara dos países: en uno las personas alcanzan edades avanzadas con frecuencia; en el otro, la duración promedio de la vida es menor.');
+
+q('rem',1,'mc','¿Qué es la tasa de reemplazo?',['El promedio de hijos por mujer necesario para que cada generación sea reemplazada por una de igual tamaño','El porcentaje de trabajadores que sustituye a los pensionados','El número de inmigrantes que compensa a los emigrantes','La cantidad de nacimientos que iguala a las muertes en un año'],'Mantiene la población estable a largo plazo. Si la fecundidad cae por debajo, la población eventualmente declina y envejece.');
+q('rem',1,'mc','¿Cuál es el valor establecido como tasa de reemplazo?',['2,1 hijos por mujer','1,0 hijo por mujer','3,5 hijos por mujer','5,0 hijos por mujer'],'2,1: dos hijos reemplazan a los padres, y el pequeño extra compensa a quienes no llegan a tener hijos.');
+q('rem',2,'mc','¿Qué le espera a su población?',['Eventualmente comenzará a declinar y a envejecer','Crecerá con más rapidez','Se mantendrá exactamente igual','Aumentará su proporción de niños'],'Bajo el nivel de reemplazo cada generación es más pequeña que la anterior. Corea del Sur, Japón, España e Italia están en esa situación.','Un país mantiene durante décadas una fecundidad muy inferior a 2,1 hijos por mujer.');
+
+q('env',1,'mc','Si disminuye la fecundidad y aumenta la esperanza de vida, ¿qué tendencia se produce?',['Envejecimiento poblacional','Explosión demográfica','Aumento de la densidad rural','Inercia demográfica'],'Nacen menos personas y las que hay viven más: crece la proporción de adultos mayores.');
+q('env',2,'order','Ordená la cadena de causa a consecuencia.',['Baja la fecundidad','Hay menos jóvenes y más adultos mayores','Se reduce la población en edad de trabajar','Aumenta la carga sobre las pensiones'],'Menos nacimientos → estructura por edades más vieja → menos trabajadores → cada trabajador sostiene a más pensionados.');
+q('env',2,'multi','¿Cuáles son consecuencias del envejecimiento poblacional?',['*Mayor carga sobre pensiones y seguridad social','*Reducción de la población en edad de trabajar','*Puede frenar la innovación y el dinamismo económico','Aumento de la población infantil'],'Menos trabajadores sostienen a más pensionados, y la economía pierde dinamismo. La población infantil se reduce.');
+q('env',1,'mc','¿Cuál situación demográfica describe este proceso?',['Envejecimiento poblacional','Expansión territorial','Aumento de la densidad rural','Crecimiento acelerado'],'Cambia la estructura por edades y con ella las necesidades de la sociedad.','En una sociedad disminuyen de forma sostenida los nacimientos y, a la vez, aumenta la proporción de personas adultas mayores.');
+
+q('den',1,'mc','¿Qué relaciona la densidad de población?',['El número de habitantes con la extensión del territorio que ocupan','Los nacimientos con las defunciones','La población urbana con la rural','Los hombres con las mujeres por grupo de edad'],'Se expresa en habitantes por kilómetro cuadrado (hab/km²).');
+q('den',2,'mc','¿Por qué?',['Porque el territorio de Canadá es enormemente mayor y su población queda más repartida','Porque Canadá tiene una natalidad más baja','Porque Singapur tiene mayor esperanza de vida','Porque la población de Singapur es rural'],'La densidad divide habitantes entre km². Con un territorio inmenso, a Canadá le tocan muy pocas personas por km².','Canadá tiene casi siete veces más habitantes que Singapur, pero su densidad es muchísimo menor.');
+q('den',2,'pick','¿Cuál concepto describe CÓMO se reparte la gente en el territorio (zonas concentradas y zonas vacías)?',['Distribución de la población','Densidad de población'],'La distribución describe dónde se concentra la gente; la densidad es la medida numérica de cuántos habitantes hay por km².');
+
+q('dis',1,'mc','¿Dónde vive más del 90 % de la población mundial?',['En el hemisferio norte, sobre todo entre los 20° y 60° de latitud','En el hemisferio sur, cerca de los trópicos','En las regiones polares y desérticas','Repartida por igual en ambos hemisferios'],'En esa franja predominan los climas templados, donde habita el mayor porcentaje de la población.');
+q('dis',1,'mc','¿En qué tipo de regiones se producen vacíos poblacionales?',['En las de climas polares y desérticos','En las de climas templados','En las costas del Atlántico','En las cercanas al mar Mediterráneo'],'El frío extremo o la falta de agua impiden el asentamiento. Por eso las áreas más al norte de América, Europa y Asia tienen poca población.');
+q('dis',2,'mc','¿Qué región desplazó a Europa del segundo lugar en densidad de población?',['África','Oceanía','América del Norte','América Latina'],'Asia es la más densa; África subió al segundo puesto. Oceanía es la menos densa.');
+q('dis',2,'mc','¿Qué patrón se repite dentro de casi todos los continentes?',['La población se concentra en las costas y las áreas más al norte tienen poca gente','La población se concentra en el interior y las costas quedan vacías','La población se reparte de forma homogénea','La población se concentra en zonas polares'],'Costa atlántica de América del Norte, Atlántico norte y Mediterráneo en Europa, costa de China e India, golfo de Guinea, costa este de Australia.');
+
+q('crd',1,'match','Relacioná cada factor de distribución con lo que incluye.',[['Geográfico','Fertilidad del suelo, agua, clima y relieve'],['Histórico','Fundaciones coloniales y poblamiento de épocas anteriores'],['Socioeconómico','Servicios, empleo y vías de comunicación']],'Son los tres tipos de factores que influyen en la elección del lugar donde se reside.');
+q('crd',2,'mc','¿Qué factor de distribución se evidencia?',['Socioeconómico','Histórico','Geográfico','Climático'],'Empleo y acceso a servicios (electricidad, agua, educación, salud) son factores socioeconómicos.','Una familia decide establecerse en una zona porque ahí encuentra más posibilidades de empleo y acceso a servicios.');
+q('crd',2,'mc','¿Qué caracteriza a la Gran Área Metropolitana (GAM)?',['Ocupa una parte muy pequeña del territorio pero alberga a la mayoría de la población','Ocupa la mayor parte del territorio y tiene poca población','Es la región con menor densidad del país','Agrupa a los cantones costeros del Pacífico'],'Es la aglomeración urbana más extensa: 3,8 % del territorio y cerca del 65 % de la población. Ahí se concentran instituciones del Estado y empresas.');
+q('crd',1,'tf','La mayoría de la población de Costa Rica vive en áreas rurales.',false,'Más del 72 % vive en áreas urbanas; cerca del 28 % en áreas rurales.');
+q('crd',2,'mc','¿Qué provoca la presión demográfica en la GAM?',['Un alto impacto en la red vial y en los recursos naturales','Una reducción de las instituciones del Estado','Un aumento de la población rural','La desaparición de las empresas privadas'],'Mucha gente en poco espacio satura las vías y presiona los recursos.');
+
+q('pol',1,'pick','¿Cuál país aplicó una política estricta y obligatoria de hijo único?',['China','India'],'China la estableció para frenar un crecimiento que veía insostenible. India, en cambio, promovió la planificación familiar con campañas educativas.');
+q('pol',2,'mc','¿Qué efectos no deseados generó la política de hijo único en China?',['Desequilibrios de género y un rápido envejecimiento','Un crecimiento poblacional todavía más acelerado','El aumento de la mortalidad infantil','La migración masiva hacia Europa'],'Redujo los nacimientos, pero China tuvo que abandonarla y ahora ofrece incentivos para evitar un declive demográfico.');
+q('pol',2,'mc','¿Por qué India siguió creciendo aunque promovió la planificación familiar?',['Por la inercia demográfica (una población joven muy numerosa que sigue teniendo hijos) y la menor mortalidad','Porque prohibió el uso de anticonceptivos','Porque recibió inmigración masiva','Porque aumentó su tasa de fecundidad'],'Aunque cada mujer tenga menos hijos, hay tantísimos jóvenes en edad reproductiva que el total sigue creciendo.');
+q('pol',2,'match','Relacioná cada caso con su política poblacional.',[['China','Límite obligatorio de hijos, luego flexibilizado'],['India','Planificación familiar voluntaria con campañas educativas'],['Japón y Corea del Sur','Incentivos: licencias, subsidios y guarderías']],'Unos buscan frenar el crecimiento y otros estimular los nacimientos.');
+q('pol',2,'mc','¿Por qué una misma política poblacional no puede aplicarse igual en todos los países?',['Porque responde a realidades demográficas diferentes','Porque la ONU lo prohíbe','Porque todos los países tienen la misma estructura por edades','Porque las políticas no producen efectos sociales'],'Un país con población joven que crece rápido necesita algo distinto de uno envejecido que pierde habitantes.');
+
+q('pro',1,'mc','¿Cómo es el crecimiento actual de la población mundial?',['Continúa creciendo, pero más lentamente que a mediados del siglo XX','Crece cada vez más rápido','Está disminuyendo en todos los continentes','Se detuvo por completo'],'El ritmo anual se ha desacelerado, aunque en números absolutos el aumento sigue siendo significativo.');
+q('pro',1,'mc','Según las proyecciones, ¿cuál es el único continente que perderá población hacia 2050?',['Europa','Asia','América','Oceanía'],'Europa tuvo el crecimiento más bajo y se proyecta que no crezca, sino que pierda población. La migración podría alterar esa cifra.');
+q('pro',2,'mc','¿Cuál continente tendrá el mayor crecimiento proyectado al 2050?',['África','Europa','Asia','Oceanía'],'África tuvo un crecimiento vertiginoso y se proyecta que aumente su población en dos tercios.');
+q('pro',2,'mc','¿Cuál conclusión se desprende de las proyecciones mundiales?',['Las dinámicas poblacionales varían según las características de cada región','Todas las regiones presentan idéntico comportamiento','El crecimiento depende solo de la extensión territorial','Todos los continentes crecerán al mismo ritmo'],'Unas regiones crecen rápido, otras poco y otras decrecen.');
+
+q('crp',1,'mc','¿Cómo se comportará la población costarricense en las próximas décadas?',['Seguirá creciendo a menor ritmo, llegará a un pico y luego comenzará a disminuir','Crecerá cada vez más rápido','Disminuirá desde ahora','Se mantendrá igual hasta fin de siglo'],'Con una fecundidad tan baja, el crecimiento se frena y la población termina reduciéndose.');
+q('crp',2,'mc','¿Qué explica la rápida reducción de la fecundidad en Costa Rica?',['La incorporación de la mujer al mercado laboral, que retarda la maternidad','El aumento de la mortalidad infantil','La emigración masiva de mujeres jóvenes','La prohibición estatal de tener más de dos hijos'],'La participación laboral de las mujeres creció mucho desde mediados del siglo XX. También influyen los anticonceptivos y los cambios en las prioridades de vida.');
+q('crp',2,'mc','Después de aumentar a mediados del siglo XX, ¿por qué retrocedió la natalidad en Costa Rica?',['Por las campañas de control de natalidad y el alza en el costo de la vida','Por el deterioro de la atención prenatal','Por la reducción de la esperanza de vida','Por la disminución de la población urbana'],'Primero subió por las mejoras en salud y atención prenatal; luego bajó por el control natal y el costo de vida.');
+q('crp',1,'tf','La fecundidad actual de Costa Rica está por encima del nivel de reemplazo generacional.',false,'Se estima en 1,24 hijos por mujer, muy por debajo de 2,1. La población pierde capacidad de renovación.');
+q('crp',2,'mc','¿Cómo puede compensarse la incapacidad de reemplazo generacional?',['Con un grupo numeroso en edad reproductiva o con flujos inmigratorios','Con el aumento de la mortalidad','Con la reducción de la esperanza de vida','Con el traslado de población a zonas rurales'],'Si hay mucha gente en edad de tener hijos, o llega población extranjera, la pérdida se amortigua.');
+
+q('c3',1,'pick','¿Cuál de los dos países presenta una población más envejecida y decrecimiento anual?',['Japón','Bolivia'],'Japón pierde población cada año: su mortalidad aumenta y su fecundidad y natalidad se mantienen bajas.');
+q('c3',2,'multi','¿Qué repercusiones económicas enfrenta Japón por su situación demográfica?',['*Reducción de la fuerza de trabajo','*Cierre de cientos de escuelas','*Mayor carga económica para pagar pensiones','Crecimiento acelerado de la población joven'],'Con pocos nacimientos sobran escuelas y faltan trabajadores que sostengan las pensiones.');
+q('c3',2,'mc','En Bolivia, ¿qué resulta de combinar una fecundidad baja con una menor mortalidad?',['Un crecimiento demográfico más lento de lo esperado','Un decrecimiento poblacional anual','Un crecimiento acelerado','Un rápido cierre de escuelas'],'Bolivia tuvo un crecimiento discreto. La mortalidad en descenso aumenta la esperanza de vida, pero la fecundidad baja frena el crecimiento.');
+
+q('crn',1,'mc','¿Cuál es la provincia más densamente poblada de Costa Rica?',['San José','Alajuela','Guanacaste','Limón'],'En San José está además el cantón con la densidad más alta del país: Tibás.');
+q('crn',1,'mc','¿Cuál es el cantón con la densidad de población más alta del país?',['Tibás','Osa','Talamanca','Bagaces'],'Tibás, en San José. Osa, Talamanca, Turrubares y Bagaces están entre los de menor densidad.');
+q('crn',2,'pick','Alajuela es la segunda provincia en cantidad de habitantes. ¿Cuál es la segunda en DENSIDAD?',['Heredia','Alajuela'],'Heredia es mucho más pequeña, así que su población está más concentrada. Población total y densidad no son lo mismo.');
+q('crn',1,'mc','¿Cuáles son las provincias con menor densidad de población?',['Guanacaste y Puntarenas','San José y Heredia','Cartago y Alajuela','Heredia y Cartago'],'Son provincias extensas con relativamente poca población. Le sigue Limón.');
+q('crn',2,'multi','¿Cuáles cantones están entre los de menor densidad del país?',['*Osa','*Talamanca','*Turrubares','Tibás'],'Osa (Puntarenas), Talamanca (Limón), Turrubares (San José) y Bagaces (Guanacaste). Tibás es el más denso.');
+
+q('des',1,'pick','¿En cuál grupo de países la natalidad es más alta?',['Países menos desarrollados','Países desarrollados'],'En los más desarrollados la natalidad está en niveles muy bajos; en los menos desarrollados es varias veces mayor.');
+q('des',2,'multi','¿Qué explica la baja natalidad en los países desarrollados?',['*Mayor acceso de las mujeres a la educación','*Mayor acceso de las mujeres al mercado laboral','*Alto costo de la vida y presiones profesionales','Patrones culturales patriarcales'],'Los patrones patriarcales y el menor acceso a salud reproductiva explican la natalidad ALTA de los países en desarrollo.');
+q('des',2,'mc','¿Qué enfrentan los países con las tasas de natalidad más elevadas, como Níger o Somalia?',['Pobreza extrema, conflictos, salud deficiente y una gran población joven sin oportunidades','Envejecimiento y sistemas de pensiones costosos','Cierre de escuelas por falta de niños','Reducción de la fuerza de trabajo'],'Su alta natalidad está ligada a problemas de acceso a planificación familiar y a una alta mortalidad infantil.');
+
+q('c2',1,'pick','¿Cuál país sufrió una guerra civil que provocó unas 800 000 muertes y miles de desplazados?',['Ruanda','España'],'Ocurrió en Ruanda. Al restablecerse el orden, el país mejoró algunos de sus indicadores demográficos.');
+q('c2',2,'mc','¿Qué problemas ha generado la muy baja fecundidad en España?',['El envejecimiento de la población y el alto costo de mantener las pensiones','Un crecimiento poblacional acelerado','El aumento de la mortalidad infantil','La falta de infraestructura educativa'],'Con pocos nacimientos la población envejece y sostener los regímenes de pensiones se vuelve caro.');
+q('c2',1,'tf','Tras restablecerse el orden, la tasa de mortalidad de Ruanda se redujo a más de la mitad.',true,'Es el ejemplo de cómo un conflicto dispara la mortalidad y cómo la paz permite recuperar los indicadores.');
+
+q('crc',1,'mc','¿Cuál provincia registró el crecimiento más alto en el periodo reciente?',['Guanacaste','San José','Cartago','Heredia'],'Le siguió Puntarenas. Cartago y Heredia registraron el menor crecimiento.');
+q('crc',2,'mc','¿Qué impulsó el crecimiento de Guanacaste?',['Factores como el turismo y la migración interna','La concentración de instituciones del Estado','La fundación de ciudades coloniales','La reducción del costo de vida en la GAM'],'Las provincias costeras o con expansión turística y residencial crecen más que las del Valle Central.');
+q('crc',2,'multi','¿Por qué perdieron población los cantones del centro del país?',['*Por los altos costos de vida','*Por la búsqueda de vivienda más accesible en las periferias','*Por la disminución del tamaño promedio de los hogares','Por la falta de servicios públicos en el centro'],'21 cantones redujeron su población, la mayoría en el centro de San José y cantones aledaños. El centro sí tiene servicios; lo que expulsa gente es el costo.');
+q('crc',2,'pick','¿Cuáles provincias tienden a tener un menor crecimiento relativo?',['Las del Valle Central','Las costeras con expansión turística'],'San José, Cartago y la zona central de Alajuela crecen menos que las provincias costeras.');
+q('crc',1,'tf','De mediados del siglo XX a inicios del XXI, todas las provincias aumentaron su población.',true,'Todas crecieron en cada censo; lo que cambia es el ritmo. A nivel de cantones sí hubo pérdidas.');
+
+q('c1',1,'pick','¿Cuál país mantiene parámetros demográficos estables desde hace varias décadas?',['Finlandia','Nicaragua'],'Finlandia es un país desarrollado con fecundidad baja y estable, lo que explica su reducido crecimiento.');
+q('c1',2,'mc','¿Qué ocurrió con Nicaragua en las últimas décadas?',['Tuvo un crecimiento moderado; bajaron su mortalidad y su fecundidad, y tiende a estabilizarse','Perdió población cada año','Su fecundidad aumentó con fuerza','Su mortalidad se duplicó'],'Ambos factores contribuyen a que el crecimiento poblacional se estabilice.');
+q('c1',2,'mc','¿Cuál es la utilidad principal de comparar casos como Finlandia y Nicaragua?',['Identificar diferencias en sus comportamientos demográficos','Demostrar que todos los países tienen la misma estructura','Establecer que la población depende solo del territorio','Probar que el desarrollo no influye en la población'],'Muestra que las sociedades se encuentran en momentos distintos de su evolución poblacional.');
+
+q('cri',1,'match','Relacioná cada área con lo que debe hacer el Estado costarricense.',[['Salud','Formar profesionales y atender a los adultos mayores'],['Empleo y finanzas','Generar empleo y reestructurar las pensiones'],['Educación','Seguir invirtiendo aunque baje la natalidad'],['Ambiente','Uso racional de recursos y planeamiento urbano']],'Son las cuatro áreas de implicaciones del crecimiento poblacional en el siglo XXI.');
+q('cri',2,'mc','¿Por qué deben reestructurarse los regímenes de pensiones?',['Para que puedan sostener el aumento de la población adulta mayor','Porque la población joven crece demasiado rápido','Porque la esperanza de vida está disminuyendo','Porque hay menos personas pensionadas'],'Cada vez hay más pensionados y menos personas trabajando para sostenerlos.');
+q('cri',1,'tf','Como la natalidad y la fecundidad bajan, el Estado ya no necesita invertir en educación.',false,'Se debe continuar la inversión, para menores y para adultos: asegura una mejor condición económica para las generaciones futuras.');
+q('cri',2,'mc','¿Cuál medida responde mejor a esta transformación?',['Considerar las nuevas necesidades derivadas de la estructura por edades','Aumentar obligatoriamente la densidad de población','Eliminar el análisis de los indicadores demográficos','Reducir la inversión en salud'],'Una población que envejece demanda otros servicios: salud, pensiones, empleo adaptado.','Un país presenta una natalidad reducida y una esperanza de vida elevada. Sus autoridades identifican una población que envejece.');
+
+q('c4',1,'pick','¿En cuál país el aumento de población fue más acelerado?',['Pakistán','Francia'],'La población de Pakistán se multiplicó con rapidez, mientras la de Francia creció lentamente.');
+q('c4',2,'mc','¿Qué explica la diferencia de crecimiento entre Francia y Pakistán?',['Pakistán mantiene una fecundidad alta y la de Francia es significativamente menor','Francia tiene una mortalidad mucho más alta','Pakistán recibe más inmigración','Francia tiene menos territorio'],'La fecundidad es la clave del contraste entre ambos.');
+q('c4',1,'tf','Francia y Pakistán se encuentran entre los países más poblados de sus respectivos continentes.',true,'Esa es su semejanza. La diferencia es el ritmo de crecimiento.');
+
+q('dyn',1,'mc','¿Cuándo crece la población de un lugar?',['Cuando los nacimientos superan a los fallecidos o llegan personas de otros lugares','Cuando la mortalidad supera a la natalidad','Cuando aumenta la extensión del territorio','Cuando disminuye la esperanza de vida'],'También crece si cada mujer tiene al menos dos hijos a lo largo de su vida.');
+q('dyn',2,'mc','¿Cuáles indicadores corresponden?',['Natalidad, mortalidad y fecundidad','Migración, urbanización y densidad','Distribución, territorio y esperanza de vida','Densidad, natalidad y urbanización'],'Nacimientos → natalidad. Defunciones → mortalidad. Hijos por mujer → fecundidad.','Unos indicadores permiten identificar los nacimientos de una población, otros analizar las defunciones, y otros valorar el promedio de hijos que tendría una mujer.');
+
+q('mig',1,'mc','¿Qué impulsa la disparidad demográfica y económica entre países?',['La migración hacia los países desarrollados, que necesitan mano de obra joven','El cierre de fronteras en todos los continentes','El aumento de la natalidad en Europa','La reducción de la esperanza de vida'],'Paradójicamente, los países desarrollados necesitan esa mano de obra para compensar su propia disminución de nacimientos.');
+q('mig',2,'mc','¿Qué podría alterar la reducción poblacional proyectada para Europa?',['El patrón de migración: las personas que lleguen al continente','El aumento de su mortalidad','La reducción de su territorio','El descenso de su esperanza de vida'],'La inmigración puede compensar el bajo número de nacimientos.');
+
+q('crg',1,'mc','¿Cómo ha cambiado la población costarricense desde mediados del siglo XX?',['Se multiplicó más de seis veces, a diferentes ritmos','Se mantuvo casi igual','Se redujo a la mitad','Se duplicó y luego se estancó'],'Aumentó a lo largo de su historia, pero a ritmos distintos.');
+q('crg',1,'mc','¿Cuál es la fuente primaria de las estadísticas del INEC?',['Los censos de población','Las encuestas de opinión','Los registros de las empresas','Los mapas turísticos'],'El censo es el recuento de individuos de un lugar. El INEC lo complementa con encuestas de hogares, anuarios y estimaciones.');
+q('crg',2,'mc','¿Para qué sirven las estimaciones demográficas del INEC?',['Para proyectar el crecimiento y planificar políticas en salud, educación y vivienda','Para fijar el número de hijos por familia','Para definir los límites de las provincias','Para calcular los impuestos de cada cantón'],'Orientan la toma de decisiones del Estado.');
+
+q('pf',1,'mc','¿Qué es la planificación familiar?',['La decisión voluntaria de definir cuándo tener hijos, cuántos y con qué intervalo','Una ley que limita el número de hijos por pareja','Un programa estatal obligatorio de esterilización','El registro oficial de nacimientos'],'Incluye también la decisión sobre los métodos anticonceptivos. La ONU la considera un derecho humano que los Gobiernos deben satisfacer.');
+q('pf',2,'multi','Según el UNFPA, ¿cuáles son beneficios de la planificación familiar?',['*Impulsa los ahorros familiares','*Brinda mejores perspectivas de empleo y educación','*Reduce los embarazos no deseados y los abortos inseguros','Aumenta la natalidad adolescente'],'Además mejora los índices de salud de la población.');
+q('pf',2,'mc','¿Qué implica la falta de planificación familiar?',['La multiplicación de embarazos no deseados en mujeres con condiciones de vida desfavorables','La reducción inmediata de la natalidad','El aumento de la esperanza de vida','El envejecimiento acelerado de la población'],'Afecta sobre todo a quienes tienen poco acceso a servicios de salud o viven en contextos de desastre, conflicto o refugio.');
+q('pf',1,'pick','¿Dónde el uso de anticonceptivos es casi el doble?',['Países desarrollados','Países menos desarrollados'],'El continente africano es donde menos se emplean los métodos anticonceptivos modernos.');
+
+q('ea',1,'mc','¿Por qué el embarazo adolescente interesa a los Gobiernos y organismos internacionales?',['Por las consecuencias en la salud de madres e hijos','Porque aumenta la esperanza de vida','Porque reduce la población total','Porque mejora el acceso a la educación'],'Las complicaciones del embarazo y el parto son de las principales causas de muerte de adolescentes en países de ingreso medio y bajo, y los bebés tienen más riesgo de bajo peso.');
+q('ea',2,'multi','¿Con qué se relacionan las cifras altas de embarazo adolescente?',['*Educación sexual inconsistente','*Desigualdad económica','*Costumbres como el matrimonio temprano','Acceso gratuito a la planificación familiar'],'Las cifras BAJAN donde hay programas de educación sexual consolidados y planificación familiar gratuita.');
+q('ea',2,'mc','¿Qué muestran las diferencias regionales en embarazo adolescente?',['Que es una problemática con comportamientos diversos según la región','Que tiene la misma incidencia en todas las sociedades','Que depende solo del clima','Que es exclusiva de los países desarrollados'],'Las regiones más desarrolladas tienen tasas muy bajas; África occidental y central, las más altas.');
+
+q('pir',1,'mc','¿Qué es una pirámide de población?',['Un gráfico de barras que muestra la composición por sexo y grupos de edad','Un mapa de densidad por cantones','Una tabla con los nacimientos por año','Un gráfico del crecimiento total de la población'],'Sirve para analizar la estructura de edades de un lugar en un momento determinado.');
+q('pir',2,'mc','¿Cómo se proyecta la pirámide de Costa Rica hacia 2050?',['Con una base cada vez menor y más población de 50 a 64 años que de 0 a 14','Con una base muy ancha de niños','Idéntica a la de mediados del siglo XX','Con menos adultos mayores que hoy'],'La forma se vuelve más rectangular: señal de menor crecimiento y de envejecimiento.');
+
+q('mf',1,'mc','¿En qué consiste el matrimonio forzado?',['En la unión en que una de las personas, o las dos, se casa en contra de su voluntad','En un matrimonio entre personas de distinta nacionalidad','En una unión de hecho entre adultos','En un matrimonio celebrado sin ceremonia'],'Las mujeres menores de 18 años son las más perjudicadas (matrimonio infantil). Es una grave violación de los derechos humanos.');
+q('mf',2,'multi','Según el UNFPA, ¿por qué razones ocurre el matrimonio forzado?',['*Reducir el número de personas que los padres deben alimentar','*Obtener una recompensa económica','*Cumplir con la tradición cultural','Mejorar la formación académica de la hija'],'También se usa como supuesta «protección» de mujeres en situaciones vulnerables, como campos de refugiados.');
+q('mf',2,'multi','¿Cuáles son consecuencias del matrimonio forzado?',['*Riesgos en la salud reproductiva','*Daño psicológico','*Interrupción de la formación académica','Mayor acceso al empleo'],'La niña asume el rol de esposa y probablemente de madre sin estar preparada, y deja los estudios.');
+
+q('tr',1,'mc','¿Cómo define la ONU la trata de personas?',['Captación, transporte, traslado, acogida o recepción de personas usando amenaza o fuerza para explotarlas','El traslado voluntario de trabajadores entre países','La migración de familias por motivos económicos','El ingreso de turistas sin documentos'],'El elemento clave es la finalidad de explotación mediante amenaza o fuerza.');
+q('tr',2,'match','Relacioná cada forma de trata con sus principales víctimas o modalidades.',[['Trabajos forzados','Principalmente hombres y niños'],['Explotación sexual','Principalmente mujeres y niñas'],['Otras formas','Mendicidad, niños soldados y adopciones con lucro']],'Los trabajos forzados son la forma más detectada; la explotación sexual, la segunda.');
+q('tr',2,'mc','¿Qué aumenta la vulnerabilidad de las víctimas de trata?',['Los desastres climáticos, los conflictos, los desplazamientos, la pobreza y la inseguridad','El acceso a la educación superior','El crecimiento del empleo formal','La reducción de la natalidad'],'Las redes criminales captan con más facilidad a quienes están económicamente necesitados o desplazados.');
+
+q('sit',1,'mc','Frente a la trata de personas, Costa Rica es un país de…',['Origen, tránsito y destino de víctimas','Solo tránsito','Solo destino','Ninguna de las tres condiciones'],'Se ha identificado trata con fines sexuales asociada al turismo y trabajo forzoso en agricultura, manufactura y servicio doméstico.');
+q('sit',2,'mc','¿Qué busca la Ley sobre Relaciones Impropias?',['Proteger a las personas menores de edad de relaciones abusivas y del matrimonio forzado','Regular la adopción internacional','Limitar el número de hijos por familia','Sancionar la migración irregular'],'Penaliza con cárcel las relaciones de menores con personas considerablemente mayores.');
+q('sit',2,'mc','¿Qué permitió a Costa Rica reducir de forma significativa los nacimientos entre adolescentes?',['Programas educativos y charlas del sector público y privado','La prohibición del matrimonio civil','El aumento de la esperanza de vida','La reducción de la oferta de anticonceptivos'],'Además el país mantiene una alta prevalencia de uso de métodos anticonceptivos modernos.');
+
+q('foc',1,'mc','¿Dónde están los dos focos mayoritarios de población de Asia?',['En China, hacia la costa, y en India, cerca del océano Índico','En los territorios más septentrionales','En el interior desértico','En las islas del Pacífico'],'Los territorios asiáticos más al norte tienen una baja densidad.');
+q('foc',2,'mc','¿Dónde se asienta la mayor aglomeración de Oceanía?',['En la costa este de Australia, en ciudades como Sídney y Melbourne','En el centro desértico de Australia','En la costa oeste de Australia','En el norte del continente'],'Se repite el patrón mundial: la población se concentra en las costas.');
+
+// Comparaciones cara a cara (modo especial)
+const PAIRS=[
+{id:'c3',a:{n:'Japón',ty:'Asia · desarrollado',f:['Población que decrece cada año','Fecundidad y natalidad muy bajas','Mortalidad en aumento','Cierre de escuelas y más carga de pensiones']},
+ b:{n:'Bolivia',ty:'América del Sur · en desarrollo',f:['Crecimiento poblacional discreto','Fecundidad descendió al nivel de reemplazo','Mortalidad en descenso','Aumenta la esperanza de vida']},
+ qs:[['¿Cuál de los dos presenta una población más envejecida?',0,'Japón: su fecundidad lleva décadas por debajo del reemplazo y su población decrece.'],['¿En cuál la mortalidad en descenso favorece el aumento de la esperanza de vida?',1,'Bolivia: su mortalidad bajó con fuerza, mientras la de Japón aumenta por el envejecimiento.'],['¿Cuál enfrenta el cierre de cientos de escuelas?',0,'Japón: con tan pocos nacimientos, faltan niños para llenarlas.']]},
+{id:'c2',a:{n:'España',ty:'Europa · desarrollado',f:['Población casi cuatro veces mayor','Fecundidad muy baja','Mortalidad estable','Envejecimiento y pensiones costosas']},
+ b:{n:'Ruanda',ty:'África · menos desarrollado',f:['Crecimiento moderado','Fecundidad alta, aunque bajó','Guerra civil: unas 800 000 muertes','Mortalidad reducida a más de la mitad']},
+ qs:[['¿Cuál sufrió una guerra civil que causó desplazamientos a países vecinos?',1,'Ruanda. Al restablecerse el orden mejoró sus indicadores demográficos.'],['¿Cuál enfrenta un alto costo para mantener los regímenes de pensiones?',0,'España, por el envejecimiento que genera su muy baja fecundidad.'],['¿Cuál redujo su tasa de mortalidad a más de la mitad?',1,'Ruanda, tras el fin del conflicto.']]},
+{id:'c1',a:{n:'Finlandia',ty:'Europa · desarrollado',f:['Parámetros estables por décadas','Fecundidad baja','Crecimiento reducido','Mortalidad levemente en aumento']},
+ b:{n:'Nicaragua',ty:'América Latina · en desarrollo',f:['Crecimiento demográfico moderado','Fecundidad bajó con fuerza','Mortalidad bajó','Tiende a estabilizarse']},
+ qs:[['¿Cuál explica su reducido crecimiento por una fecundidad baja y estable?',0,'Finlandia: sus parámetros demográficos son estables desde hace varias décadas.'],['¿Cuál experimentó un crecimiento demográfico moderado?',1,'Nicaragua. Su mortalidad y fecundidad bajaron, y eso estabiliza su crecimiento.']]},
+{id:'c4',a:{n:'Francia',ty:'Europa · desarrollado',f:['Entre los más poblados de Europa','Fecundidad baja y estable','Crecimiento lento','Mortalidad estable']},
+ b:{n:'Pakistán',ty:'Asia · en desarrollo',f:['Entre los más poblados del mundo','Fecundidad alta','Crecimiento acelerado','Mortalidad en descenso']},
+ qs:[['¿Cuál tuvo un aumento de población más acelerado?',1,'Pakistán: su población se multiplicó con rapidez.'],['¿Cuál tiene una fecundidad significativamente menor?',0,'Francia. Esa diferencia de fecundidad explica el contraste de crecimiento.']]}
+];
+
+/* =====================================================================
+   2. UTILIDADES Y ESTADO (localStorage con respaldo en memoria)
+   ===================================================================== */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const RM=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+const PN={1:'Esencial',2:'Muy importante',3:'Complementario'};
+const C=id=>CONCEPTS.find(c=>c.id===id);
+const KEY='studyrush.ultimate.v1';let S;
+const fresh=()=>({c:{},used:{},n:0,ok:0,cmp:{},fc:{}});
+function load(){try{const r=localStorage.getItem(KEY);S=r?Object.assign(fresh(),JSON.parse(r)):fresh()}catch(e){S=fresh()}
+ CONCEPTS.forEach(c=>{S.c[c.id]=Object.assign({seen:0,ok:0,bad:0,streak:0,m:0,due:0},S.c[c.id]||{})})}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const tot=()=>({all:CONCEPTS.length,seen:CONCEPTS.filter(c=>S.c[c.id].seen).length,m:CONCEPTS.filter(c=>S.c[c.id].m).length});
+
+function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id));document.body.classList.toggle('dark',id==='home');window.scrollTo(0,0);
+ if(id==='home')paintHome();if(id==='explore')paintExplore()}
+let toastT;function toast(t){const e=$('#toast');e.innerHTML='<i>✦</i>'+t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1900)}
+function countUp(e,to,suf=''){if(RM){e.textContent=to+suf;return}const t0=performance.now(),d=700;(function f(t){const k=Math.min(1,(t-t0)/d);e.textContent=Math.round(to*(1-Math.pow(1-k,3)))+suf;if(k<1)requestAnimationFrame(f)})(t0)}
+function burst(x,y){if(RM||!document.body.animate)return;const cols=['#278568','#8C2430','#243B59','#7fd6b8'];for(let i=0;i<12;i++){const d=el('i','dot');d.style.cssText=`left:${x}px;top:${y}px;background:${cols[i%4]}`;document.body.append(d);const a=i/12*6.283,r=40+Math.random()*40;
+ d.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(${Math.cos(a)*r-4}px,${Math.sin(a)*r-4}px) scale(0)`,opacity:0}],{duration:600,easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>d.remove()}}
+function openCard(id){const c=C(id);$('#mPr').className='pr p'+c.p;$('#mPr').textContent=PN[c.p];$('#mT').textContent=c.n;$('#mP').textContent=c.fc;$('#modal').classList.add('on')}
+
+/* =====================================================================
+   3. HOME
+   ===================================================================== */
+function paintHome(){const t=tot();countUp($('#sEss'),CONCEPTS.filter(c=>c.p===1).length);countUp($('#sCov'),Math.round(t.seen/t.all*100),'%');countUp($('#sDom'),t.m);countUp($('#sPen'),t.all-t.seen);
+ $('#bStart').textContent=S.n?'Continuar repaso':'Comenzar repaso'}
+
+/* =====================================================================
+   4. MOTOR ADAPTATIVO
+   - Visto: se respondió al menos una pregunta del concepto.
+   - Dominado: dos aciertos seguidos en ese concepto. Un error lo devuelve a pendiente.
+   - Un error programa un repaso unas preguntas después, con una pregunta distinta.
+   - Si hay varios errores recientes, se priorizan preguntas básicas (nivel 1).
+   ===================================================================== */
+let ses=null,cur=null,answered=false,check=null;
+const qs=cid=>ITEMS.filter(i=>i.c===cid);
+function choose(cid,easy){const all=qs(cid);let un=all.filter(i=>!S.used[i.id]);
+ if(!un.length)un=all.filter(i=>S.used[i.id]===-1&&i.id!==ses.lastQ[cid]);
+ if(!un.length)return null;const pref=un.filter(i=>easy?i.l===1:i.l===2);return(pref.length?pref:un)[0]}
+const chooseAny=cid=>choose(cid,true)||qs(cid).find(i=>i.id!==ses.lastQ[cid])||qs(cid)[0];
+function start(mode){let pool;
+ if(mode==='rush')pool=CONCEPTS.filter(c=>c.p===1);
+ else if(mode==='pend'){pool=CONCEPTS.filter(c=>S.c[c.id].seen&&!S.c[c.id].m);if(!pool.length)pool=CONCEPTS.slice()}
+ else pool=CONCEPTS.slice();
+ ses={mode,pool:pool.map(c=>c.id),n:0,ok:0,last:[],rev:{},lastC:null,lastQ:{}};
+ ses.deep=mode!=='rush'||ses.pool.every(id=>S.c[id].seen);
+ show('quiz');next()}
+function pickNext(){const P=ses.pool,hard=ses.last.slice(-3).filter(x=>!x).length>=2,canRev=id=>S.c[id].due&&(ses.rev[id]||0)<3&&id!==ses.lastC;
+ let d=P.filter(id=>canRev(id)&&S.n>=S.c[id].due);
+ if(d.length){ses.rev[d[0]]=(ses.rev[d[0]]||0)+1;return chooseAny(d[0])}
+ const u=P.find(id=>!S.c[id].seen);if(u)return choose(u,true)||qs(u)[0];
+ if(ses.deep){const cand=P.filter(id=>!S.c[id].m&&choose(id,hard));if(cand.length){const id=cand.find(x=>x!==ses.lastC)||cand[0];return choose(id,hard)}}
+ d=P.filter(canRev);if(d.length){ses.rev[d[0]]=(ses.rev[d[0]]||0)+1;return chooseAny(d[0])}
+ return null}
+function next(){cur=pickNext();if(!cur)return report();answered=false;check=null;renderQ()}
+function grade(ok){answered=true;const st=S.c[cur.c];st.seen=1;S.n++;ses.n++;ses.last.push(ok);ses.lastC=cur.c;ses.lastQ[cur.c]=cur.id;let nm=false;
+ if(ok){S.ok++;ses.ok++;st.ok++;st.streak++;st.due=0;S.used[cur.id]=1;if(st.streak>=2&&!st.m){st.m=1;nm=true}}
+ else{st.bad++;st.streak=0;st.m=0;st.due=S.n+3;S.used[cur.id]=-1}
+ save();feedback(ok,nm)}
+
+/* =====================================================================
+   5. PREGUNTAS — render por tipo (todo se responde con toques)
+   ===================================================================== */
+const HINT={mc:'',tf:'',pick:'Tocá una de las dos tarjetas.',multi:'Seleccioná todas las correctas y comprobá.',order:'Tocá los elementos en orden. Tocá de nuevo para quitar.',match:'Tocá un elemento de la izquierda y luego su pareja.'};
+function setMain(on){const b=$('#qMain');b.disabled=!on}
+function head(){const pool=ses.pool,seen=pool.filter(id=>S.c[id].seen).length,m=pool.filter(id=>S.c[id].m).length;
+ $('#qBar').style.width=(ses.deep?(seen+m)/(pool.length*2):seen/pool.length)*100+'%';$('#qNum').textContent='Desafío '+(ses.n+(answered?0:1));$('#qDom').textContent='★ '+tot().m+'/'+CONCEPTS.length}
+function renderQ(){const it=cur,c=C(it.c),B=$('#qBody');B.innerHTML='';const w=el('div','qin');
+ const meta=el('div','meta');meta.append(el('span','num','Desafío '+(ses.n+1)+(S.c[it.c].due?' · repaso':'')));w.append(meta);
+ if(it.ctx)w.append(el('div','ctx',it.ctx));w.append(el('h2','qt',it.q));if(HINT[it.t])w.append(el('p','hint',HINT[it.t]));
+ ({mc:rChoice,tf:rChoice,pick:rChoice,multi:rMulti,order:rOrder,match:rMatch})[it.t](it,w);B.append(w);
+ const pr=$('#qPr');pr.className='pr p'+c.p;pr.textContent=PN[c.p];$('#qCard').disabled=true;
+ const mb=$('#qMain');mb.className='btn navy';const imm=it.t==='mc'||it.t==='tf'||it.t==='pick';mb.textContent=imm?'Elegí una opción':'Comprobar';mb.disabled=true;head();window.scrollTo(0,0)}
+function rChoice(it,box){let opts;if(it.t==='tf')opts=[{t:'Verdadero',ok:it.o===true},{t:'Falso',ok:it.o===false}];else opts=shuffle(it.o.map((t,i)=>({t,ok:i===0})));
+ const wrap=el('div',it.t==='pick'?'picks':it.t==='tf'?'opts tf':'opts');
+ opts.forEach((o,i)=>{const b=el('button','opt',`<span class="k">${'ABCD'[i]}</span><span class="tx">${o.t}</span><span class="mk"></span>`);o.b=b;
+  b.onclick=()=>{if(answered)return;opts.forEach(x=>{x.b.disabled=true;if(x.ok)x.b.classList.add('good')});if(!o.ok)b.classList.add('bad');grade(o.ok)};wrap.append(b)});box.append(wrap)}
+function rMulti(it,box){const opts=shuffle(it.o.map(t=>({t:t.replace(/^\*/,''),ok:t[0]==='*',s:false})));const wrap=el('div','opts');
+ opts.forEach(o=>{o.b=el('button','opt',`<span class="k">+</span><span class="tx">${o.t}</span><span class="mk"></span>`);
+  o.b.onclick=()=>{if(answered)return;o.s=!o.s;o.b.classList.toggle('sel',o.s);$('.k',o.b).textContent=o.s?'✓':'+';setMain(opts.some(x=>x.s))};wrap.append(o.b)});box.append(wrap);
+ check=()=>{const ok=opts.every(o=>o.s===o.ok);opts.forEach(o=>{o.b.disabled=true;o.b.classList.remove('sel');if(o.ok)o.b.classList.add('good');else if(o.s)o.b.classList.add('bad')});grade(ok)}}
+function rOrder(it,box){const items=shuffle(it.o.map((t,i)=>({t,i})));let seq=[];const wrap=el('div','opts');
+ const paint=()=>{items.forEach(o=>{const p=seq.indexOf(o);o.b.classList.toggle('sel',p>=0);$('.k',o.b).textContent=p>=0?p+1:'·'});setMain(seq.length===items.length)};
+ items.forEach(o=>{o.b=el('button','opt',`<span class="k"></span><span class="tx">${o.t}</span><span class="mk"></span>`);o.b.onclick=()=>{if(answered)return;const p=seq.indexOf(o);if(p>=0)seq.splice(p,1);else seq.push(o);paint()};wrap.append(o.b)});box.append(wrap);paint();
+ check=()=>{const ok=seq.every((o,p)=>o.i===p);items.forEach(o=>{o.b.disabled=true;o.b.classList.remove('sel');o.b.classList.add(o.i===seq.indexOf(o)?'good':'bad');$('.k',o.b).textContent=o.i+1});
+  items.slice().sort((a,b)=>a.i-b.i).forEach(o=>wrap.append(o.b));grade(ok)}}
+function rMatch(it,box){const L=it.o.map((p,i)=>({t:p[0],i})),R=shuffle(it.o.map((p,i)=>({t:p[1],i})));let pick=null;const pairs=new Map();
+ const wrap=el('div','match'),cl=el('div','mcol'),cr=el('div','mcol');
+ const paint=()=>{L.forEach((o,n)=>{o.b.classList.toggle('act',pick===o);o.b.classList.toggle('sel',pairs.has(o));$('.k',o.b).textContent=n+1});
+  R.forEach(o=>{const l=[...pairs].find(p=>p[1]===o);o.b.classList.toggle('sel',!!l);$('.k',o.b).textContent=l?L.indexOf(l[0])+1:'·'});setMain(pairs.size===L.length)};
+ L.forEach(o=>{o.b=el('button','opt',`<span class="k"></span><span class="tx"><b>${o.t}</b></span>`);o.b.onclick=()=>{if(answered)return;pairs.delete(o);pick=pick===o?null:o;paint()};cl.append(o.b)});
+ R.forEach(o=>{o.b=el('button','opt',`<span class="k"></span><span class="tx">${o.t}</span>`);o.b.onclick=()=>{if(answered||!pick)return;[...pairs].forEach(p=>{if(p[1]===o)pairs.delete(p[0])});pairs.set(pick,o);pick=L.find(x=>!pairs.has(x))||null;paint()};cr.append(o.b)});
+ wrap.append(cl,cr);box.append(wrap);pick=L[0];paint();
+ check=()=>{let ok=true;L.forEach(o=>{const g=pairs.get(o).i===o.i;ok=ok&&g;o.b.disabled=true;o.b.classList.remove('sel','act');o.b.classList.add(g?'good':'bad')});
+  R.forEach(o=>{o.b.disabled=true;o.b.classList.remove('sel');o.b.classList.add('good');$('.k',o.b).textContent=o.i+1});R.slice().sort((a,b)=>a.i-b.i).forEach(o=>cr.append(o.b));grade(ok)}}
+const OKS=['Correcto.','Exacto.','Bien visto.','Eso es.'];
+function feedback(ok,nm){const c=C(cur.c),w=$('.qin');
+ const f=el('div','fb '+(ok?'ok':'no'),`<h4>${ok?'<svg class="chk" viewBox="0 0 26 26"><circle cx="13" cy="13" r="13"/><path d="M7.5 13.5l3.6 3.6 7.4-8"/></svg>'+OKS[ses.n%OKS.length]:'Casi. Mirá la respuesta correcta.'}</h4><p>${cur.exp}</p><span class="cn">${c.n}${ok?'':' · vuelve en unas preguntas'}</span>`);
+ w.append(f);const mb=$('#qMain');mb.textContent='Continuar';mb.disabled=false;mb.className='btn '+(ok?'navy':'pri');$('#qCard').disabled=false;head();
+ if(ok){const r=f.getBoundingClientRect();burst(r.left+31,r.top+31)}
+ if(nm)toast('Concepto dominado');else if(ok&&ses.mode==='rush'&&ses.pool.every(id=>S.c[id].seen)&&!ses.told){ses.told=1;toast('Repaso esencial terminado')}
+ setTimeout(()=>f.scrollIntoView({block:'nearest',behavior:RM?'auto':'smooth'}),60)}
+function mainTap(){if(answered)next();else if(check)check()}
+
+/* =====================================================================
+   6. REPORTE
+   ===================================================================== */
+function report(){const t=tot(),B=$('#rBody'),acc=ses&&ses.n?Math.round(ses.ok/ses.n*100):null,pct=Math.round(t.m/t.all*100),R=82,L=2*Math.PI*R;
+ const dom=CONCEPTS.filter(c=>S.c[c.id].m),pen=CONCEPTS.filter(c=>S.c[c.id].seen&&!S.c[c.id].m),uns=CONCEPTS.filter(c=>!S.c[c.id].seen);
+ const prow=p=>{const a=CONCEPTS.filter(c=>c.p===p),s=a.filter(c=>S.c[c.id].seen).length;return `<div class="prr"><span class="pr p${p}">P${p}</span><div class="bar"><i style="width:${s/a.length*100}%"></i></div><em>${s}/${a.length}</em></div>`};
+ const li=a=>a.map(c=>`<li><span>${c.n}</span><small>${PN[c.p]}</small></li>`).join('');
+ B.innerHTML=`<div class="eyebrow" style="color:var(--wine)">${ses&&ses.mode==='rush'?'Essential Rush':'Sesión'}</div><h2 class="h1">Your Study Report</h2>
+ <p class="sub">Basado solo en lo que respondiste. Dominado = dos aciertos seguidos en el mismo concepto.</p>
+ <div class="ringw"><svg class="ring2" viewBox="0 0 190 190"><circle class="t" cx="95" cy="95" r="${R}"/><circle class="v" cx="95" cy="95" r="${R}" stroke-dasharray="${L}" stroke-dashoffset="${L}"/></svg><div><b id="rPct">0%</b><span>dominado</span></div></div>
+ <div class="rs"><div class="rsi"><b>${acc==null?'—':acc+'%'}</b><span>Precisión</span></div><div class="rsi"><b>${t.seen}/${t.all}</b><span>Cubiertos</span></div><div class="rsi"><b>${t.m}</b><span>Dominados</span></div><div class="rsi"><b>${t.all-t.m}</b><span>Pendientes</span></div></div>
+ <div class="grp">Prioridades cubiertas</div><div class="prl">${prow(1)}${prow(2)}${prow(3)}</div>
+ <div class="two"><div class="lst g"><h4>Esto ya lo dominás</h4>${dom.length?'<ul>'+li(dom)+'</ul>':'<p>Todavía nada con dos aciertos seguidos. Seguí: vas construyendo.</p>'}</div>
+ <div class="lst w"><h4>Esto te falta repasar</h4>${pen.length||uns.length?'<ul>'+pen.map(c=>`<li><span>${c.n}</span><small>${S.c[c.id].streak?'1 acierto, falta confirmar':'por reforzar'}</small></li>`).join('')+uns.map(c=>`<li><span>${c.n}</span><small>sin ver</small></li>`).join('')+'</ul>':'<p>Nada pendiente en la app.</p>'}</div></div>
+ <div class="acts"><button class="btn pri" id="rPend" ${pen.length?'':'disabled'}>Repasar pendientes</button><button class="btn navy" id="rCont">Continuar aprendiendo</button><button class="btn line" id="rHome">Volver al inicio</button></div>
+ <p class="note">${ses?ses.n+' preguntas respondidas en esta sesión · ':''}${S.n} en total. Este reporte mide tu avance dentro de la app, no garantiza una nota.</p>`;
+ $('#rPend').onclick=()=>start('pend');$('#rCont').onclick=()=>start('full');$('#rHome').onclick=()=>show('home');show('report');
+ setTimeout(()=>{$('.ring2 .v').style.strokeDashoffset=L*(1-t.m/t.all);countUp($('#rPct'),pct,'%')},120)}
+
+/* =====================================================================
+   7. EXPLORAR · FLASHCARDS 3D · COMPARACIONES
+   ===================================================================== */
+function paintExplore(){const fcs=CONCEPTS.filter(c=>c.p===1);$('#tCardsN').textContent=fcs.filter(c=>S.fc[c.id]).length+' de '+fcs.length+' entendidas';
+ $('#tCmpN').textContent=PAIRS.filter(p=>S.cmp[p.id]).length+' de '+PAIRS.length+' completadas';const M=$('#map');M.innerHTML='';
+ [1,2,3].forEach(p=>{M.append(el('div','grp','Prioridad '+p+' — '+PN[p]));const l=el('div','cl');CONCEPTS.filter(c=>c.p===p).forEach(c=>{const s=S.c[c.id];const b=el('button','ci',`<i class="st ${s.m?'m':s.seen?'s':''}"></i><span>${c.n}</span><small>${s.m?'Dominado':s.seen?'Visto':'Pendiente'}</small>`);b.onclick=()=>openCard(c.id);l.append(b)});M.append(l)})}
+let deck=[],deckN=0;
+function startCards(){deck=CONCEPTS.filter(c=>c.p===1&&!S.fc[c.id]).map(c=>c.id);if(!deck.length)deck=CONCEPTS.filter(c=>c.p===1).map(c=>c.id);deckN=deck.length;show('cards');paintCard(true)}
+function paintCard(first){const B=$('#fBody');$('#fBar').style.width=(1-deck.length/deckN)*100+'%';
+ if(!deck.length){B.innerHTML=`<div style="text-align:center;padding-top:8vh"><div class="eyebrow" style="color:var(--green)">Mazo completado</div><h2 class="h1">Conceptos esenciales repasados.</h2><p class="sub">Ahora comprobá que los recordás sin verlos.</p><div class="fcb"><button class="btn pri" id="fQ">Comenzar repaso</button><button class="btn line" id="fB">Volver</button></div></div>`;$('#fQ').onclick=()=>start('rush');$('#fB').onclick=()=>show('explore');return}
+ const c=C(deck[0]);B.innerHTML=`<div class="deckc">${deckN-deck.length+1} / ${deckN} · TOCÁ LA TARJETA PARA GIRARLA</div><div class="scene"><div class="card3 ${first?'':'inn'}" id="fc" role="button" tabindex="0" aria-label="Girar tarjeta"><div class="face f"><small>${PN[c.p]}</small><h3>${c.n}</h3><small>¿Podés explicarlo?</small></div><div class="face b"><h5>${c.n}</h5><p>${c.fc}</p></div></div></div>
+ <div class="fcb"><button class="btn line" id="fL">Repasar después</button><button class="btn navy" id="fK">Entendido</button></div>`;
+ const card=$('#fc');card.onclick=()=>{card.classList.remove('inn');card.classList.toggle('flip')};card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click()}};
+ const go=k=>{const id=deck.shift();if(k){S.fc[id]=1}else{deck.push(id);delete S.fc[id];if(!S.c[id].m)S.c[id].due=S.n+1}save();card.classList.add('out');setTimeout(()=>paintCard(false),RM?0:300)};
+ $('#fK').onclick=()=>go(true);$('#fL').onclick=()=>go(false)}
+let cp=0,cq=0;
+function startCmp(){cp=Math.max(0,PAIRS.findIndex(p=>!S.cmp[p.id]));cq=0;show('compare');paintCmp()}
+function paintCmp(){const T=$('#cTabs');T.innerHTML='';PAIRS.forEach((p,i)=>{const b=el('button','tab'+(i===cp?' on':'')+(S.cmp[p.id]?' done':''),p.a.n+' vs. '+p.b.n);b.onclick=()=>{cp=i;cq=0;paintCmp()};T.append(b)});
+ const P=PAIRS[cp],B=$('#cBody');B.innerHTML='';const vs=el('div','vs');const mk=x=>el('button','cc',`<div class="ty">${x.ty}</div><h3>${x.n}</h3><ul>${x.f.map(f=>'<li>'+f+'</li>').join('')}</ul>`);const cards=[mk(P.a),mk(P.b)];vs.append(...cards);B.append(vs);
+ const Q=P.qs[cq],box=el('div','cq',`<small>Pregunta ${cq+1} de ${P.qs.length} · tocá una tarjeta</small><h4>${Q[0]}</h4>`);B.append(box);let done=false;
+ cards.forEach((c,i)=>c.onclick=()=>{if(done)return;done=true;const ok=i===Q[1];cards.forEach((x,j)=>{x.disabled=true;if(j===Q[1])x.classList.add('good');else x.classList.add(ok?'dim':'bad')});
+  S.c[P.id].seen=1;save();box.append(el('p',null,(ok?'<b>Correcto.</b> ':'<b>Era '+(Q[1]?P.b.n:P.a.n)+'.</b> ')+Q[2]));
+  const last=cq===P.qs.length-1,nb=el('button','btn pri',last?(cp===PAIRS.length-1?'Terminar':'Siguiente comparación'):'Siguiente pregunta');box.append(nb);
+  if(ok){const r=cards[i].getBoundingClientRect();burst(r.left+r.width/2,r.top+30)}
+  if(last){S.cmp[P.id]=1;save();toast('Comparación completada')}
+  nb.onclick=()=>{if(!last){cq++;paintCmp()}else if(cp<PAIRS.length-1){cp++;cq=0;paintCmp();window.scrollTo(0,0)}else show('explore')};
+  setTimeout(()=>nb.scrollIntoView({block:'nearest',behavior:RM?'auto':'smooth'}),60)})}
+
+/* =====================================================================
+   8. EVENTOS
+   ===================================================================== */
+$('#bStart').onclick=()=>start(CONCEPTS.filter(c=>c.p===1).every(c=>S.c[c.id].seen)?'full':'rush');
+$('#bRush').onclick=()=>start('rush');$('#bFull').onclick=()=>start('full');$('#bExplore').onclick=()=>show('explore');
+$('#qMain').onclick=mainTap;$('#qExit').onclick=report;$('#qCard').onclick=()=>cur&&openCard(cur.c);
+$('#tCards').onclick=startCards;$('#tCmp').onclick=startCmp;
+$('#mX').onclick=()=>$('#modal').classList.remove('on');$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('on')};
+$$('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
+let rT;$('#bReset').onclick=function(){if(this.dataset.arm){try{localStorage.removeItem(KEY)}catch(e){}load();delete this.dataset.arm;this.textContent='Progreso reiniciado';paintHome();setTimeout(()=>this.textContent='Reiniciar progreso',1500)}
+ else{this.dataset.arm=1;this.textContent='¿Seguro? Tocá de nuevo para borrar todo';clearTimeout(rT);rT=setTimeout(()=>{delete this.dataset.arm;this.textContent='Reiniciar progreso'},3500)}};
+document.addEventListener('keydown',e=>{if($('#modal').classList.contains('on')){if(e.key==='Escape'||e.key==='Enter')$('#modal').classList.remove('on');return}
+ if(!$('#quiz').classList.contains('on'))return;if(e.key==='Enter'&&!$('#qMain').disabled){e.preventDefault();mainTap()}
+ else if(/^[1-4]$/.test(e.key)&&!answered&&cur&&cur.t!=='match'){const o=$$('#qBody .opt')[+e.key-1];if(o)o.click()}});
+load();paintHome();
+window.__SR={get S(){return S},get cur(){return cur},get ses(){return ses},ITEMS,CONCEPTS};
+</script>
+</body>
+</html>
